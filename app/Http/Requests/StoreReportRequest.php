@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\UserProject;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,14 @@ class StoreReportRequest extends FormRequest
     {
         return [
             //
-            'user_project_id' => 'required|exists:user_projects,id',
+            'user_project_id' => [
+                'required',
+                'exists:user_projects,id',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    if (!UserProject::where('user_id', Auth::id())->where('id', $value)->exists())
+                        $fail('failed to find project');
+                },
+            ],
             'description' => 'required|string',
             'file' => 'nullable|file|max:2048',
         ];

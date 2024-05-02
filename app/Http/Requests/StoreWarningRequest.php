@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\UserProject;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +26,15 @@ class StoreWarningRequest extends FormRequest
     {
         return [
             //
-            'user_project_id' => 'required|exists:user_projects,id',
+            'user_project_id' => [
+                'required',
+                'exists:user_projects,id',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $tmp = UserProject::where('id', $value)->first();
+                    if (!$tmp || $tmp->project->user->id != Auth::id())
+                        $fail('failed to find project');
+                },
+            ],
             'description' => 'required|string',
             'file' => 'nullable|file|max:2048',
 

@@ -32,7 +32,7 @@ class StoreUserProjectRequest extends FormRequest
                 'required',
                 function (string $attribute, mixed $value, Closure $fail) {
                     if (!UserSupervisor::where('user_id', $value)->where('supervisor_id', Auth::id())->exists())
-                        $fail('only supervisor of a user can add user to a project');
+                        $fail('only supervisor of users can add users to their project');
                 },
             ],
             'project_id' => [

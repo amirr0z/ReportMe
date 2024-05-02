@@ -5,6 +5,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProjectController;
 use App\Http\Controllers\UserSupervisorController;
 use App\Http\Controllers\WarningController;
@@ -22,7 +23,10 @@ Route::prefix('auth')->name('auth.')->controller(AuthController::class)->group(f
         Route::get('/', 'index');
     });
 });
+
+
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('users', [UserController::class, 'index']);
     Route::apiResource('messages', MessageController::class);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('reports', ReportController::class);
