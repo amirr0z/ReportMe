@@ -52,18 +52,18 @@ Follow these steps to set up the project locally:
     
     
     `php artisan key:generate` 
-    
-6.  **Run database migrations and seeders:**
+
+6.  **Link storage:**
+
+
+    `php artisan storage:link` 
+
+7.  **Run database migrations and seeders:**
     
     
     `php artisan migrate --seed` 
     
     This will create necessary database tables and seed sample data.
-7.  **Link storage:**
-
-
-`php artisan storage:link` 
-
 
 8.  **Start the development server:**
     
