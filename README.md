@@ -59,8 +59,13 @@ Follow these steps to set up the project locally:
     `php artisan migrate --seed` 
     
     This will create necessary database tables and seed sample data.
-    
-7.  **Start the development server:**
+7.  **Link storage:**
+
+
+`php artisan storage:link` 
+
+
+8.  **Start the development server:**
     
     
     `php artisan serve` 
