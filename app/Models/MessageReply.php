@@ -6,12 +6,11 @@ use App\Casts\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Project extends Model
+class MessageReply extends Model
 {
     use HasFactory;
+
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +18,9 @@ class Project extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'description',
-        'title',
+        'content',
+        'user_id',
+        'message_id',
         'file',
     ];
 
@@ -36,19 +36,13 @@ class Project extends Model
         ];
     }
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function reports(): HasManyThrough
+    public function message(): BelongsTo
     {
-        return $this->hasManyThrough(Report::class, UserProject::class);
-    }
-
-    public function users(): HasManyThrough
-    {
-        return $this->hasManyThrough(User::class, UserProject::class);
+        return $this->belongsTo(Message::class);
     }
 }

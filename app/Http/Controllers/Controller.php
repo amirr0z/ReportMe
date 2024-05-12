@@ -19,7 +19,7 @@ abstract class Controller
         // $searchTerm = $request->input('search');
         // $this->search($query, $searchTerm, $this->searchableColumns);
         // }
-        $queries = $request->all();
+        $queries = $request->all(); //TODO ADD INDEX SEARCH SYSTEM
         foreach ($queries as $key => $value) {
             $query->orWhere($key, 'like', '%' . $value . '%');
         }

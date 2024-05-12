@@ -14,9 +14,6 @@ class ReportCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
-        // return [
-        //     'data' => $this->collection(ReportResource::class),
-        // ];
+        return [$this->resource];
     }
 }

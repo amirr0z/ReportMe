@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class ProjectControllerTest extends TestCase
@@ -39,6 +40,7 @@ class ProjectControllerTest extends TestCase
         $projectData = [
             'title' => 'New Project',
             'description' => 'This is a new project.',
+            'file' => UploadedFile::fake()->create('test.pdf', 1000),
         ];
 
         $response = $this->postJson('/api/projects', $projectData);

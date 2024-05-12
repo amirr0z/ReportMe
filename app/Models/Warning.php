@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\File;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,19 @@ class Warning extends Model
         'file',
         'score',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'file' => File::class,
+        ];
+    }
+
 
     public function userProject(): BelongsTo
     {

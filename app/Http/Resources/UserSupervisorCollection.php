@@ -14,6 +14,6 @@ class UserSupervisorCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [$this->resource];
     }
 }
