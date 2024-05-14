@@ -14,9 +14,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         //
-        $data = User::query();
-        $this->applyIndexQuery($data, $request);
-        $data = $data->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(User::query(), 'users', $request->all())->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new UserCollection($data), 'message' => 'successful']);
     }
 

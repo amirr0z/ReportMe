@@ -7,7 +7,10 @@ use App\Http\Requests\StoreWarningRequest;
 use App\Http\Requests\UpdateWarningRequest;
 use App\Http\Resources\WarningCollection;
 use App\Http\Resources\WarningResource;
+use App\Models\Project;
+use App\Models\UserProject;
 use App\Models\Warning;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WarningController extends Controller
@@ -15,10 +18,23 @@ class WarningController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Auth::user()->warnings()->orderBy('id', 'desc')->paginate(10);
+        // $data = Auth::user()->warnings()->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            Warning::query(),
+            'warnings',
+            $request->all()
+        )->whereIn(
+            'user_project_id',
+            UserProject::query()
+                ->whereIn(
+                    'project_id',
+                    Project::query()->where('user_id', Auth::id())->pluck('id')->toArray()
+                )
+                ->orWhere('user_id', Auth::id())->pluck('id')->toArray()
+        )->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new WarningCollection($data), 'message' => 'successful']);
     }
 

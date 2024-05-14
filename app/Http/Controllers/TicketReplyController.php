@@ -34,12 +34,18 @@ class TicketReplyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Ticket $ticket)
+    public function index(Request $request, Ticket $ticket)
     {
         //
         if (Auth::user()->cannot('view', $ticket))
             throw new UnauthorizedException;
-        $data = $ticket->replies()->orderBy('id', 'desc')->paginate(10);
+        // $data = $ticket->replies()->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            TicketReply::query(),
+            'ticket_replies',
+            $request->all()
+        )->where('ticket_id', $ticket->id)->orderBy('id', 'desc')->paginate(10);
+
         return response()->json(['data' => new TicketReplyCollection($data), 'message' => 'successful']);
     }
 

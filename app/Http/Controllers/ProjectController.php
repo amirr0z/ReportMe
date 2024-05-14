@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
@@ -15,10 +16,15 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Project::where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        // $data = Project::where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            Project::query(),
+            'projects',
+            $request->all()
+        )->where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new ProjectCollection($data), 'message' => 'successful']);
     }
 

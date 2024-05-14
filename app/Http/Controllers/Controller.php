@@ -2,30 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\Searchable;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 abstract class Controller
 {
-    //
-    use Searchable;
 
-    protected $searchableColumns = [];
-
-    protected function applyIndexQuery($query, Request $request)
+    protected function deepSearch(QueryBuilder|EloquentBuilder $baseQuery, string $table, array $searchList = [])
     {
-        // Apply search filter if search term is provided in the request
-        // if ($request->has('search')) {
-        // $searchTerm = $request->input('search');
-        // $this->search($query, $searchTerm, $this->searchableColumns);
-        // }
-        $queries = $request->all(); //TODO ADD INDEX SEARCH SYSTEM
-        foreach ($queries as $key => $value) {
-            $query->orWhere($key, 'like', '%' . $value . '%');
-        }
+        if ($searchList)
+            $baseQuery->where(function ($query) use ($searchList, $table) {
 
-        // Add more query logic here based on your requirements
+                $foreignColumns = Schema::getForeignKeys($table);
+                foreach ($foreignColumns as $foreignColumn) {
+                    $query->whereIn(
+                        $foreignColumn['columns'][0],
+                        $this->deepSearch(
+                            DB::table($foreignColumn['foreign_table']),
+                            $foreignColumn['foreign_table'],
+                            $searchList
+                        )->get()->pluck('id')->toArray()
+                    );
+                }
+                $columns = Schema::getColumnListing($table);
+                foreach ($columns as $column) {
+                    foreach ($searchList as $term => $value)
+                        if (str_contains($column, $term))
+                            $query->where("{$column}", 'LIKE', "%{$value}%");
+                }
+            });
 
-        return $query;
+        return $baseQuery;
     }
 }

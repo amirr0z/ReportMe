@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserSupervisorRequest;
 use App\Http\Resources\UserSupervisorCollection;
 use App\Http\Resources\UserSupervisorResource;
 use App\Models\UserSupervisor;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserSupervisorController extends Controller
@@ -15,10 +16,17 @@ class UserSupervisorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = UserSupervisor::where('user_id', Auth::id())->orWhere('supervisor_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        // $data = UserSupervisor::where('user_id', Auth::id())->orWhere('supervisor_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            UserSupervisor::query(),
+            'user_supervisors',
+            $request->all()
+        )->where(function ($query) {
+            $query->where('user_id', Auth::id())->orWhere('supervisor_id', Auth::id());
+        })->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new UserSupervisorCollection($data), 'message' => 'successful']);
     }
 

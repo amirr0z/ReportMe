@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sender_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('receiver_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreignId('sender_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('sender_id');
+            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreignId('receiver_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('receiver_id');
+            $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('content');
             $table->string('title');
             $table->string('file')->nullable();

@@ -34,12 +34,17 @@ class MessageReplyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Message $message)
+    public function index(Request $request, Message $message)
     {
         //
         if (Auth::user()->cannot('view', $message))
             throw new UnauthorizedException;
-        $data = $message->replies()->orderBy('id', 'desc')->paginate(10);
+        // $data = $message->replies()->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            MessageReply::query(),
+            'message_replies',
+            $request->all()
+        )->where('message_id', $message->id)->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new MessageReplyCollection($data), 'message' => 'successful']);
     }
 

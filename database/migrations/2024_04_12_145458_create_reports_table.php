@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_project_id')->onDelete('cascade');
+            // $table->foreignId('user_project_id')->onDelete('cascade');
+            $table->unsignedBigInteger('user_project_id');
+            $table->foreign('user_project_id')->references('id')->on('user_projects')->onDelete('cascade');
             // $table->foreignId('project_id')->onDelete('cascade');
             $table->text('description');
             $table->string('score')->nullable();

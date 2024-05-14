@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMessageRequest;
 use App\Http\Resources\MessageCollection;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
@@ -15,10 +16,18 @@ class MessageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Message::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            Message::query(),
+            'messages',
+            $request->all()
+        )->where(function ($query) {
+            $query->where('sender_id', Auth::id())
+                ->orWhere('receiver_id', Auth::id());
+        })->orderBy('id', 'desc')->paginate(10);
+        // $data = Message::where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new MessageCollection($data), 'message' => 'successful']);
     }
 

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketCollection;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
@@ -15,10 +16,18 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Auth::user()->tickets()->orderBy('id', 'desc')->paginate(10);
+        // $data = Auth::user()->tickets()->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            Ticket::query(),
+            'tickets',
+            $request->all()
+        )->where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        if (Auth::user()->hasRole('admin'))
+            $data = Ticket::query()->orderBy('id', 'desc')->paginate(10);
+
         return response()->json(['data' => new TicketCollection($data), 'message' => 'successful']);
     }
 

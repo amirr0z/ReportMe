@@ -7,7 +7,9 @@ use App\Http\Requests\StoreUserProjectRequest;
 use App\Http\Requests\UpdateUserProjectRequest;
 use App\Http\Resources\UserProjectCollection;
 use App\Http\Resources\UserProjectResource;
+use App\Models\Project;
 use App\Models\UserProject;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserProjectController extends Controller
@@ -15,10 +17,20 @@ class UserProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = UserProject::where('user_id', Auth::id())->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            UserProject::query(),
+            'user_projects',
+            $request->all()
+        )->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhereIn(
+                    'project_id',
+                    Project::where('user_id', Auth::id())->pluck('id')->toArray()
+                );
+        })->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new UserProjectCollection($data), 'message' => 'successful']);
     }
 

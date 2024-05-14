@@ -7,9 +7,11 @@ use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Http\Resources\ReportCollection;
 use App\Http\Resources\ReportResource;
+use App\Models\Project;
 use App\Models\Report;
 use App\Models\UserProject;
 use App\Models\UserSupervisor;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
@@ -17,10 +19,24 @@ class ReportController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $data = Auth::user()->reports()->orderBy('id', 'desc')->paginate(10);
+        // $data = Auth::user()->reports()->orderBy('id', 'desc')->paginate(10);
+        $data = $this->deepSearch(
+            Report::query(),
+            'reports',
+            $request->all()
+        )->whereIn(
+            'user_project_id',
+            UserProject::query()
+                ->whereIn(
+                    'project_id',
+                    Project::query()->where('user_id', Auth::id())->pluck('id')->toArray()
+                )
+                ->orWhere('user_id', Auth::id())->pluck('id')->toArray()
+        )->orderBy('id', 'desc')->paginate(10);
+
         return response()->json(['data' => new ReportCollection($data), 'message' => 'successful']);
     }
 
