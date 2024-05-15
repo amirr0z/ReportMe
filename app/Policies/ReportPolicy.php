@@ -23,7 +23,7 @@ class ReportPolicy
     public function view(User $user, Report $report): bool
     {
         //
-        return $user->id == $report->user()->id || $report->project->user->id == $user->id;
+        return $user->id == $report->user()->id || $report->project()->user->id == $user->id;
     }
 
     /**
