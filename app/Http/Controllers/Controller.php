@@ -18,7 +18,7 @@ abstract class Controller
 
                 $foreignColumns = Schema::getForeignKeys($table);
                 foreach ($foreignColumns as $foreignColumn) {
-                    $query->orWhereIn(
+                    $query->whereIn(
                         $foreignColumn['columns'][0],
                         $this->deepSearch(
                             DB::table($foreignColumn['foreign_table']),
@@ -30,8 +30,9 @@ abstract class Controller
                 $columns = Schema::getColumnListing($table);
                 foreach ($columns as $column) {
                     foreach ($searchList as $term => $value)
-                        if ($column == $term)
-                            $query->orWhere("{$column}", 'LIKE', "%{$value}%");
+                        if ($column == $term) {
+                            $query->where("{$column}", 'LIKE', "%{$value}%");
+                        }
                 }
             });
 

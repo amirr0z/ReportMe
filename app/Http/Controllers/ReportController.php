@@ -29,11 +29,10 @@ class ReportController extends Controller
             $request->all()
         )->whereIn(
             'user_project_id',
-            UserProject::query()
-                ->whereIn(
-                    'project_id',
-                    Project::query()->where('user_id', Auth::id())->pluck('id')->toArray()
-                )
+            UserProject::query()->whereIn(
+                'project_id',
+                Project::query()->where('user_id', Auth::id())->pluck('id')->toArray()
+            )
                 ->orWhere('user_id', Auth::id())->pluck('id')->toArray()
         )->orderBy('id', 'desc')->paginate(10);
 

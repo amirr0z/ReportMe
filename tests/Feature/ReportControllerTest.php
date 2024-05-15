@@ -21,11 +21,16 @@ class ReportControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user);
+
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
         $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
-
         Report::factory()->count(3)->create(['user_project_id' => $userProject->id]);
-        $response = $this->getJson('/api/reports');
+
+        $userSupervisor = UserSupervisor::factory()->create(['supervisor_id' => $user->id]);
+        $userProject = UserProject::factory()->create(['project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        Report::factory()->count(3)->create(['user_project_id' => $userProject->id]);
+
+        $response = $this->getJson('/api/reports?project_id=' . $userProject->project->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure(['data', 'message']);
