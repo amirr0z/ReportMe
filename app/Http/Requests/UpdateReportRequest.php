@@ -24,7 +24,7 @@ class UpdateReportRequest extends FormRequest
         return [
             //
             'description' => 'sometimes|string',
-            'file' => 'required|file|max:2048',
+            'file' => 'nullable|file|max:2048',
         ];
     }
 }

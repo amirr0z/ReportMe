@@ -22,6 +22,7 @@ class Project extends Model
         'description',
         'title',
         'file',
+        'deadline'
     ];
 
     /**
