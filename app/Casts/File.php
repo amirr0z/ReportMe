@@ -29,6 +29,6 @@ class File implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return Storage::putFile($model->getTable(), $value);
+        return Storage::putFile('public/' . $model->getTable(), $value);
     }
 }
