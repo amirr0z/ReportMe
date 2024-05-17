@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Requests\ScoreReportRequest;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Http\Resources\ReportCollection;
@@ -68,6 +69,20 @@ class ReportController extends Controller
     {
         //
         if (Auth::user()->cannot('update', $report))
+            throw new UnauthorizedException;
+        $validated = $request->validated();
+        $report->update($validated);
+        return response()->json(['data' => new ReportResource($report), 'message' => 'successful']);
+    }
+
+
+    /**
+     * score the specified resource in storage.
+     */
+    public function score(ScoreReportRequest $request, Report $report)
+    {
+        //
+        if (Auth::user()->cannot('score', $report))
             throw new UnauthorizedException;
         $validated = $request->validated();
         $report->update($validated);

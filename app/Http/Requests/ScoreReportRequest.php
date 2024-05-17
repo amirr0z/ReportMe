@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UpdateReportRequest extends FormRequest
+class ScoreReportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -23,8 +24,7 @@ class UpdateReportRequest extends FormRequest
     {
         return [
             //
-            'description' => 'sometimes|string',
-            'file' => 'required|file|max:2048',
+            'score' => 'required|numeric'
         ];
     }
 }

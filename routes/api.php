@@ -29,13 +29,17 @@ Route::prefix('auth')->name('auth.')->controller(AuthController::class)->group(f
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('users', [UserController::class, 'index']);
+    Route::apiResource('user-supervisors', UserSupervisorController::class);
+
     Route::apiResource('messages', MessageController::class);
     Route::apiResource('messages.message-replies', MessageReplyController::class)->shallow();
+
     Route::apiResource('projects', ProjectController::class);
+    Route::apiResource('user-projects', UserProjectController::class);
     Route::apiResource('reports', ReportController::class);
+    Route::put('reports/{report}/score', [ReportController::class, 'score']);
     Route::apiResource('warnings', WarningController::class);
+
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('tickets.ticket-replies', TicketReplyController::class)->shallow();
-    Route::apiResource('user-projects', UserProjectController::class);
-    Route::apiResource('user-supervisors', UserSupervisorController::class);
 });

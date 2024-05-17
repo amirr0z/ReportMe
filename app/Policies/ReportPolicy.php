@@ -27,6 +27,15 @@ class ReportPolicy
     }
 
     /**
+     * Determine whether the user can score the report.
+     */
+    public function score(User $user, Report $report): bool
+    {
+        //
+        return $report->project()->user->id == $user->id;
+    }
+
+    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool

@@ -19,7 +19,7 @@ class File implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return Storage::url($value);
+        return isset($value) ? Storage::url($value) : null;
     }
 
     /**
