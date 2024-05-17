@@ -27,7 +27,7 @@ class UpdateProjectRequest extends FormRequest
             'description' => 'sometimes|string',
             'title' => 'sometimes|string|max:255',
             'file' => 'nullable|file|max:2048',
-            'deadline' => 'nullable|date|after:tommorow'
+            'deadline' => 'nullable|date|after:tomorrow'
 
         ];
     }
