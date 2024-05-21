@@ -9,6 +9,7 @@ use App\Http\Resources\WarningCollection;
 use App\Http\Resources\WarningResource;
 use App\Models\Project;
 use App\Models\UserProject;
+use App\Models\UserSupervisor;
 use App\Models\Warning;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,10 +31,9 @@ class WarningController extends Controller
             'user_project_id',
             UserProject::query()
                 ->whereIn(
-                    'project_id',
-                    Project::query()->where('user_id', Auth::id())->pluck('id')->toArray()
-                )
-                ->orWhere('user_id', Auth::id())->pluck('id')->toArray()
+                    'user_supervisor_id',
+                    UserSupervisor::query()->where('user_id', Auth::id())->orWhere('supervisor_id', Auth::id())->pluck('id')->toArray()
+                )->pluck('id')->toArray()
         )->orderBy('id', 'desc')->paginate(10);
         return response()->json(['data' => new WarningCollection($data), 'message' => 'successful']);
     }

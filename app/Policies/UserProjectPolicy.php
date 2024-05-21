@@ -23,7 +23,7 @@ class UserProjectPolicy
     public function view(User $user, UserProject $userProject): bool
     {
         //
-        return $user->id == $userProject->user->id || $userProject->project->user->id == $user->id;
+        return $user->id == $userProject->user()->id || $userProject->project->user->id == $user->id;
     }
 
     /**

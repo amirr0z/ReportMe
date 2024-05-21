@@ -43,7 +43,7 @@ class Report extends Model
 
     public function user()
     {
-        return $this->userProject->user;
+        return $this->userProject->user();
     }
 
     public function project()

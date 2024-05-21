@@ -45,9 +45,9 @@ class AuthController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'password' => 'sometimes|required|string|min:6',
-            'email' => 'sometimes|required|string|email|unique:users,email,' . $request->user()->id,
+            'name' => 'sometimes|string|max:255',
+            'password' => 'sometimes|string|min:6',
+            'email' => 'sometimes|string|email|unique:users,email,' . $request->user()->id,
         ]);
         $request->user()->update($validated);
         return response()->json(['message' => 'User profile successfully updated', 'user' => $request->user()], 200);

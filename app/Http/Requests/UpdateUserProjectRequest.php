@@ -28,10 +28,10 @@ class UpdateUserProjectRequest extends FormRequest
     {
         return [
             //
-            'user_id' => [
+            'user_supervisor_id' => [
                 'required',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (!UserSupervisor::where('user_id', $value)->where('supervisor_id', Auth::id())->exists())
+                    if (!UserSupervisor::where('id', $value)->where('supervisor_id', Auth::id())->exists())
                         $fail('only supervisor of a user can add user to a project');
                 },
             ],
@@ -41,7 +41,7 @@ class UpdateUserProjectRequest extends FormRequest
                     if (!Project::where('user_id', Auth::id())->where('id', $value)->exists())
                         $fail('failed to find project');
                 },
-                Rule::unique('user_projects')->where('user_id', $this->user_id)->where('project_id', $this->project_id),
+                Rule::unique('user_projects')->where('user_supervisor_id', $this->user_supervisor_id)->where('project_id', $this->project_id),
             ]
         ];
     }

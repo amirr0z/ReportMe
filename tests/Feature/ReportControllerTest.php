@@ -23,15 +23,14 @@ class ReportControllerTest extends TestCase
         $this->actingAs($user);
 
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
         Report::factory()->count(3)->create(['user_project_id' => $userProject->id]);
 
         $userSupervisor = UserSupervisor::factory()->create(['supervisor_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id]), 'user_supervisor_id' => $userSupervisor->id]);
         Report::factory()->count(3)->create(['user_project_id' => $userProject->id]);
 
         $response = $this->getJson('/api/reports?project_id=' . $userProject->project->id);
-
         $response->assertStatus(200)
             ->assertJsonStructure(['data', 'message']);
     }
@@ -44,7 +43,7 @@ class ReportControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
 
 
@@ -69,7 +68,7 @@ class ReportControllerTest extends TestCase
         $this->actingAs($user);
 
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $report = Report::factory()->create(['user_project_id' => $userProject->id]);
 
@@ -78,6 +77,27 @@ class ReportControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure(['data', 'message']);
     }
+
+
+    /**
+     * Test score a specific report.
+     */
+    public function testScoreReport()
+    {
+        $user = User::factory()->create();
+        $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($userSupervisor->supervisor);
+
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+
+        $report = Report::factory()->create(['user_project_id' => $userProject->id]);
+
+        $response = $this->putJson("/api/reports/{$report->id}/score", ['score' => 96]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data', 'message']);
+    }
+
 
     /**
      * Test updating a report.
@@ -89,7 +109,7 @@ class ReportControllerTest extends TestCase
 
 
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $report = Report::factory()->create(['user_project_id' => $userProject->id]);
 
@@ -112,7 +132,7 @@ class ReportControllerTest extends TestCase
         $this->actingAs($user);
 
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $report = Report::factory()->create(['user_project_id' => $userProject->id]);
 

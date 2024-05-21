@@ -20,8 +20,9 @@ class UserProjectControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user);
+        $userSupervisor = UserSupervisor::factory()->create(['supervisor_id' => $user->id]);
 
-        UserProject::factory()->count(3)->create(['user_id' => $user->id]);
+        UserProject::factory()->count(3)->create(['user_supervisor_id' => $userSupervisor->id]);
 
         $response = $this->getJson('/api/user-projects');
 
@@ -40,7 +41,7 @@ class UserProjectControllerTest extends TestCase
 
 
         $userProjectData = [
-            'user_id' => $user->id,
+            'user_supervisor_id' => $userSupervisor->id,
             'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])->id, // Provide a valid project_id here
             // Add other necessary fields as per StoreUserProjectRequest
         ];
@@ -59,7 +60,7 @@ class UserProjectControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $userProject = UserProject::factory()->create(['user_id' => $user->id]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => UserSupervisor::factory()->create(['user_id' => $user->id])]);
 
         $response = $this->getJson("/api/user-projects/{$userProject->id}");
 
@@ -93,9 +94,10 @@ class UserProjectControllerTest extends TestCase
     public function testDeleteUserProject()
     {
         $user = User::factory()->create();
-
-        $userProject = UserProject::factory()->create(['user_id' => $user->id]);
-        $this->actingAs($userProject->project->user);
+        $project = Project::factory()->create(['user_id' => $user->id]);
+        $us = UserSupervisor::factory()->create(['supervisor_id' => $user->id]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $us->id, 'project_id' => $project->id]);
+        $this->actingAs($user);
 
         $response = $this->deleteJson("/api/user-projects/{$userProject->id}");
 

@@ -22,7 +22,7 @@ class WarningControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         Warning::factory()->count(3)->create(['user_project_id' => $userProject->id]);
         $response = $this->getJson('/api/warnings');
@@ -39,7 +39,7 @@ class WarningControllerTest extends TestCase
         $user = User::factory()->create();
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
         $this->actingAs($userSupervisor->supervisor);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
 
 
@@ -64,7 +64,7 @@ class WarningControllerTest extends TestCase
         $this->actingAs($user);
 
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $warning = Warning::factory()->create(['user_project_id' => $userProject->id]);
 
@@ -85,7 +85,7 @@ class WarningControllerTest extends TestCase
         $this->actingAs($userSupervisor->supervisor);
 
 
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $warning = Warning::factory()->create(['user_project_id' => $userProject->id]);
 
@@ -108,7 +108,7 @@ class WarningControllerTest extends TestCase
         $userSupervisor = UserSupervisor::factory()->create(['user_id' => $user->id]);
         $this->actingAs($userSupervisor->supervisor);
 
-        $userProject = UserProject::factory()->create(['user_id' => $user->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
+        $userProject = UserProject::factory()->create(['user_supervisor_id' => $userSupervisor->id, 'project_id' => Project::factory()->create(['user_id' => $userSupervisor->supervisor->id])]);
 
         $warning = Warning::factory()->create(['user_project_id' => $userProject->id]);
 

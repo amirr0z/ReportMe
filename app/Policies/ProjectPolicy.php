@@ -26,7 +26,7 @@ class ProjectPolicy
     {
         //
         return $user->id == $project->user->id ||
-            UserProject::where('project_id', $project->id)->where('user_id', $user->id)->exists();
+            UserProject::where('project_id', $project->id)->whereIn('user_id', UserSupervisor::where('user_id', $user->id)->pluck('id')->toArray())->exists();
     }
 
     /**

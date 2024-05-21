@@ -17,18 +17,23 @@ class UserProject extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
+        'user_supervisor_id',
         'project_id'
     ];
 
-    // public function userSupervisor(): BelongsTo
-    // {
-    //     return $this->belongsTo(UserSupervisor::class);
-    // }
-
-    public function user(): BelongsTo
+    public function userSupervisor(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(UserSupervisor::class);
+    }
+
+    public function user()
+    {
+        return $this->userSupervisor->user;
+    }
+
+    public function supervisor()
+    {
+        return $this->userSupervisor->supervisor;
     }
 
     public function project(): BelongsTo

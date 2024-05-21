@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\UserProject;
+use App\Models\UserSupervisor;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -30,9 +32,13 @@ class StoreReportRequest extends FormRequest
                 'required',
                 'exists:user_projects,id',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (!UserProject::where('user_id', Auth::id())->where('id', $value)->exists())
+                    if (!UserProject::whereIn('user_supervisor_id', UserSupervisor::where('user_id', Auth::id())->pluck('id')->toArray())->where('id', $value)->exists())
                         $fail('failed to find project');
-                },
+                }, function (string $attribute, mixed $value, Closure $fail) {
+                    $tmp = UserProject::find($value);
+                    if (!$tmp || (isset($tmp->project->deadline) ? Carbon::parse($tmp->project->deadline)->isPast() : false))
+                        $fail('failed to find project');
+                }
             ],
             'description' => 'required|string',
             'file' => 'nullable|file|max:2048',

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Report;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\Response;
 
 class ReportPolicy
@@ -50,7 +51,7 @@ class ReportPolicy
     public function update(User $user, Report $report): bool
     {
         //       
-        return $user->id == $report->user()->id;
+        return $user->id == $report->user()->id && (isset($report->project()->deadline) ? !Carbon::parse($report->project()->deadline)->isPast() : true);
     }
 
     /**
