@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class AuthController extends Controller
         ]);
         $user = User::create($validated);
         $token = $user->createToken('authToken')->plainTextToken;
-        return response()->json(['message' => 'User registered successfully', 'user' => $user, 'token' => $token], 201);
+        return response()->json(['message' => 'User registered successfully', 'user' => new UserResource($user), 'token' => $token], 201);
     }
 
     /**
@@ -36,7 +37,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'The provided credentials are incorrect'], 400);
         $user = User::where('email', $validated['email'])->firstOrFail();
         $token = $user->createToken('authToken')->plainTextToken;
-        return response()->json(['message' => 'User loged in successfully',  'token' => $token], 200);
+        return response()->json(['message' => 'User loged in successfully',  'token' => $token, 'user' => new UserResource($user)], 200);
     }
 
     /**
@@ -50,7 +51,7 @@ class AuthController extends Controller
             'email' => 'sometimes|string|email|unique:users,email,' . $request->user()->id,
         ]);
         $request->user()->update($validated);
-        return response()->json(['message' => 'User profile successfully updated', 'user' => $request->user()], 200);
+        return response()->json(['message' => 'User profile successfully updated', 'user' => new UserResource($request->user())], 200);
     }
 
     /**
@@ -58,6 +59,6 @@ class AuthController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json(['message' => 'successful', 'user' => $request->user()], 200);
+        return response()->json(['message' => 'successful', 'user' => new UserResource($request->user())], 200);
     }
 }
