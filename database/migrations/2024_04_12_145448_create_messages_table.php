@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('content');
             $table->string('title');
+            $table->timestamp('seen_at')->nullable()->default(null);
             $table->string('file')->nullable();
             $table->timestamps();
         });

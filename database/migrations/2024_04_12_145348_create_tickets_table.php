@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('description');
             $table->string('title');
+            $table->timestamp('seen_at')->nullable()->default(null);
+            $table->enum('status', ['closed', 'open'])->default('open');
             $table->string('file')->nullable();
             $table->timestamps();
         });

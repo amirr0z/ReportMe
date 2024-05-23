@@ -23,7 +23,7 @@ class TicketReplyPolicy
     public function view(User $user, TicketReply $ticketReply): bool
     {
         //
-        return $user->hasRole('admin') || $user->id == $ticketReply->user_id;
+        return $user->hasRole('admin') || $user->id == $ticketReply->ticket->user->id;
     }
 
     /**

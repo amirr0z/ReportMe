@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('message_replies', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('user_id')->onDelete('cacade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            // $table->foreignId('message_id')->onDelete('cacade');
             $table->unsignedBigInteger('message_id');
             $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');
             $table->text('content');
+            $table->timestamp('seen_at')->nullable()->default(null);
             $table->string('file')->nullable();
 
             $table->timestamps();
