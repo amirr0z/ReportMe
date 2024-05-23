@@ -24,6 +24,7 @@ class MessageResource extends JsonResource
             'receiver' => new UserResource($this->receiver),
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
+            'seen_at' => $this->seen_at,
         ];
     }
 }

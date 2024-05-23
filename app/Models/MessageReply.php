@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Casts\File;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class MessageReply extends Model
 {
@@ -22,7 +24,21 @@ class MessageReply extends Model
         'user_id',
         'message_id',
         'file',
+        'seen_at',
     ];
+
+
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::retrieved(function (MessageReply $message) {
+            if (!isset($message->seen_at) && Auth::check() && Auth::id() != $message->user_id)
+                $message->update(['seen_at' => Carbon::now()]);
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

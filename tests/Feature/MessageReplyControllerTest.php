@@ -64,8 +64,10 @@ class MessageReplyControllerTest extends TestCase
 
         $message = Message::factory()->create(['sender_id' => $user->id]);
         $messageReply = MessageReply::factory()->create(['message_id' => $message->id, 'user_id' => $user->id]);
+        $this->actingAs($message->receiver);
 
         $response = $this->getJson("/api/message-replies/{$messageReply->id}");
+
 
         $response->assertStatus(200)
             ->assertJsonStructure(['data', 'message']);

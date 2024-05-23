@@ -57,6 +57,7 @@ class MessageControllerTest extends TestCase
         $this->actingAs($user);
 
         $message = Message::factory()->create(['sender_id' => $user->id]);
+        $this->actingAs($message->receiver);
 
         $response = $this->getJson("/api/messages/{$message->id}");
 
