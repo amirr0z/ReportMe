@@ -68,6 +68,7 @@ class MessageReplyController extends Controller
         //
         if (Auth::user()->cannot('view', $messageReply))
             throw new UnauthorizedException();
+        $messageReply->seen();
         return response()->json(['data' => new MessageReplyResource($messageReply), 'message' => 'successful']);
     }
 

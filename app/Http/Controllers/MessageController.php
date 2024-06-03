@@ -50,6 +50,7 @@ class MessageController extends Controller
         //
         if (Auth::user()->cannot('view', $message))
             throw new UnauthorizedException;
+        $message->seen();
         return response()->json(['data' => new MessageResource($message), 'message' => 'successful']);
     }
 

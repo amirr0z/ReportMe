@@ -29,16 +29,16 @@ class MessageReply extends Model
 
 
 
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
-        static::retrieved(function (MessageReply $message) {
-            if (!isset($message->seen_at) && Auth::check() && Auth::id() != $message->user_id)
-                $message->update(['seen_at' => Carbon::now()]);
-        });
-    }
+    // /**
+    //  * The "booted" method of the model.
+    //  */
+    // protected static function booted(): void
+    // {
+    //     static::retrieved(function (MessageReply $message) {
+    //         if (!isset($message->seen_at) && Auth::check() && Auth::id() != $message->user_id)
+    //             $message->update(['seen_at' => Carbon::now()]);
+    //     });
+    // }
 
     /**
      * Get the attributes that should be cast.
@@ -60,5 +60,12 @@ class MessageReply extends Model
     public function message(): BelongsTo
     {
         return $this->belongsTo(Message::class);
+    }
+
+
+    public function seen()
+    {
+        if (!isset($this->seen_at) && Auth::check() && Auth::id() != $this->user_id)
+            $this->update(['seen_at' => Carbon::now()]);
     }
 }
