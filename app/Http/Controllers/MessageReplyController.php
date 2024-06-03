@@ -24,8 +24,9 @@ class MessageReplyController extends Controller
         return [
             function (Request $request, Closure $next) {
                 $message = Message::findOrFail($request->route('message'));
-                if ($message->sender_id != Auth::id() && $message->receiver_id != Auth::id())
+                if ($message->sender_id != Auth::id() && $message->receiver_id != Auth::id()) {
                     throw new UnauthorizedException;
+                }
                 return $next($request);
             },
         ];

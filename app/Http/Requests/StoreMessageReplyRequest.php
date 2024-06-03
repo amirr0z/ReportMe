@@ -32,7 +32,9 @@ class StoreMessageReplyRequest extends FormRequest
                 'required',
                 'exists:messages,id',
                 function (string $attribute, mixed $value, Closure $fail) {
-                    if (!Message::where('sender_id', Auth::id())->orWhere('receiver_id', $value)->exists())
+                    if (!Message::where(function ($query) {
+                        $query->where('sender_id', Auth::id())->orWhere('receiver_id', Auth::id());
+                    })->where('id', $value)->exists())
                         $fail('failed to find message');
                 },
             ],

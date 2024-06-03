@@ -55,6 +55,29 @@ class MessageReplyControllerTest extends TestCase
     }
 
     /**
+     * Test creating a new message reply.
+     */
+    public function testCreateMessageReplyForReceiver()
+    {
+        $user = User::factory()->create();
+        $message = Message::factory()->create(['sender_id' => $user->id]);
+
+        $this->actingAs($message->receiver);
+
+        $replyData = [
+            'message_id' => $message->id,
+            'content' => fake()->sentence(),
+            'file' => UploadedFile::fake()->create('test.sh', 1000),
+            // Add other necessary fields as per StoreMessageReplyRequest
+        ];
+
+        $response = $this->postJson("/api/messages/{$message->id}/message-replies", $replyData);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data', 'message']);
+    }
+
+    /**
      * Test viewing a specific message reply.
      */
     public function testViewMessageReply()
