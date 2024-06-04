@@ -73,6 +73,12 @@ Follow these steps to set up the project locally:
     The application will be available at `http://localhost:8000`.
     The application API Document will be available at `http://localhost:8000/request-docs`.
     
+9.  **Run schedule commands:**
+    
+    `php artisan schedule:work` 
+    
+    This will run commands like sending warnings automatically to users.
+    
 
 ## Usage
 
